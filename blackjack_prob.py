@@ -80,10 +80,9 @@ class Blackjack:
         """
         Check if the player has an Ace and is over 21. If true, adjust the value of the Ace to 1.
         """
-        if 12 in cards:
+        if 12 in cards and total > 21:
             print("Ace found")
-            if total > 21:
-                total -= 10
+            total -= 10
 
     def draw_card(self):
 
@@ -135,9 +134,10 @@ class Blackjack:
 
         while True:
 
-            print("Would you like to hit or stand? (h/s)")
+            blackjack = prob.blackjack(self.deck_count, self.player_total, self.deck_values)
+            print("The probability of getting a blackjack is: " + str(blackjack) + "%")
 
-            prob.blackjack(self.deck_count, self.player_total)
+            print("Would you like to hit or stand? (h/s)")
 
             choice = input()
             print()
