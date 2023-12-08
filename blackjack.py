@@ -1,14 +1,15 @@
 # Andrew Dionizio
 # CSC 340 -
 
-# python class called blackjack
+
 from random import randint
 import probability as prob
 
 
+# python class called blackjack
 class Blackjack:
 
-    def __init__(self):
+    def __init__(self, num_decks):
 
         """
         This function initializes the game. It sets the dealer's and player's
@@ -20,6 +21,7 @@ class Blackjack:
         self.player_cards = None
         self.player_total = 0
         self.dealer_total = 0
+        self.num_decks = num_decks
         self.deck_strings = ["two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen",
                              "king", "ace"]
         self.deck_values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
@@ -34,6 +36,8 @@ class Blackjack:
         thanks them for playing and exits the program.
         """
 
+        self.fill_deck()
+
         while True:
 
             print("Welcome to Blackjack!")
@@ -44,12 +48,20 @@ class Blackjack:
             print()
             if play == "y":
                 self.deal_cards()
+
             elif play == "n":
                 print("Thanks for playing!")
                 break
             else:
                 print("Invalid input, please try again.")
             print()
+
+    def fill_deck(self):
+        """
+        This function fills the deck with the correct number of cards based on the number of decks
+        """
+        for i in range(0, 13):
+            self.deck_count[i] = self.num_decks * 4
 
     def deal_cards(self):
 
@@ -58,7 +70,6 @@ class Blackjack:
         game of blackjack, player first, then dealer. It then calls the player's turn.
         """
         # check if the deck is empty
-        print(self.deck_count)
         if sum(self.deck_count) == 0:
             print("The deck is empty. Please restart the game.")
             return
@@ -129,13 +140,17 @@ class Blackjack:
         """
         This function is the player's turn. The player can hit or stand.
         If the player hits, they draw a card and their hand is printed.
-        If the player stands, it is the dealer's turn.
+        If the player stands, it is the dealer's turn. It also prints the
+        probabilities of getting a blackjack or good hand if the player hits.
         """
 
         while True:
 
-            blackjack = prob.blackjack(self.deck_count, self.player_total, self.deck_values)
-            print("The probability of getting a blackjack is: " + str(blackjack) + "%")
+            blackjack = prob.blackjack(self.deck_count, self.player_total, self.deck_values, self.num_decks)
+            print("The probability of getting a blackjack if you hit is: " + str(blackjack) + "%")
+            good_hand = prob.good_hand(self.deck_count, self.player_total, self.deck_values, self.num_decks)
+            print("The probability of getting a good hand if you hit is: " + str(good_hand) + "%")
+            print()
 
             print("Would you like to hit or stand? (h/s)")
 
@@ -253,5 +268,5 @@ class Blackjack:
         print()
 
 
-game = Blackjack()
+game = Blackjack(2)
 game.start_game()

@@ -85,7 +85,7 @@ def first_hand_18(deck):
     return round((ace_seven_prob + seven_ace_prob + nine_nine_prob + ten_eight_prob + eight_ten_prob) * 100, 2)
 
 
-def blackjack(deck, player_total, deck_values):
+def blackjack(deck, player_total, deck_values, num_decks):
     """
     This function calculates the probability of getting a blackjack after the first hand has been dealt. It is
     calculated by first getting the card needed to get a blackjack, then calculating the probability of getting it
@@ -93,6 +93,22 @@ def blackjack(deck, player_total, deck_values):
     """
     card_to_draw = 21 - player_total
 
+    if card_to_draw > 11:
+        return 0
+    elif card_to_draw == 1:
+        card_to_draw = 11
+
+    prob = prob_of_certain_card(deck, card_to_draw, deck_values, num_decks)
+
+    return round(prob * 100, 2)
+
+
+def prob_of_certain_card(deck, card_to_draw, deck_values, num_decks):
+    """
+    this function calculates the probability of drawing a certain card from the deck. It is calculated by dividing the
+    number of cards of that type in the deck by the total number of cards in the deck. Depending on the card, the
+    probability is calculated differently.
+    """
     ten_value_totals = deck[8] + deck[9] + deck[10] + deck[11]
     index = 0
     for i in range(0, len(deck_values)):
@@ -100,9 +116,36 @@ def blackjack(deck, player_total, deck_values):
             index = i
             break
 
-    if card_to_draw == 10:
-        prob = ((16*1) - (16-ten_value_totals)) / ((52*1) - (52-sum(deck)))
-    else:
-        prob = ((4*1) - (4-deck[index])) / ((52*1) - (52-sum(deck)))
+    num_total_cards_drawn = (52 * num_decks) - sum(deck)
+    num_card_needed_drawn = (4 * num_decks) - deck[index]
+    num_10_drawn = (16 * num_decks) - ten_value_totals
 
-    return round(prob * 100, 2)
+    if card_to_draw == 10:
+        prob = ((16 * num_decks) - num_10_drawn) / ((52 * num_decks) - num_total_cards_drawn)
+    else:
+        prob = ((4 * num_decks) - num_card_needed_drawn) / ((52 * num_decks) - num_total_cards_drawn)
+
+    return prob
+
+
+def good_hand(deck, player_total, deck_values, num_decks):
+    """
+    This function calculates the probability of getting a good hand after the first hand has been dealt. It is
+    calculated by first getting the card needed to get a good hand, then calculating the probability of getting it
+    using the total number of cards in the deck and the number of cards of that type in the deck.
+    """
+    if player_total >= 18:
+        return 0
+    cards_to_draw = [18 - player_total, 19 - player_total, 20 - player_total, 21 - player_total]
+    total_prob = 0
+
+    for card in cards_to_draw:
+        if card > 11:
+            continue
+        elif card == 1:
+            card = 11
+
+        prob = prob_of_certain_card(deck, card, deck_values, num_decks)
+        total_prob += prob
+
+    return round(total_prob * 100, 2)
