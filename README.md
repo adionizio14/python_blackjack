@@ -34,4 +34,4 @@ Note: The deck will be "shuffled" automatically when 70% of cards have been deal
 
 ## Sample input and gameplay
 
-![Sample Gameplay](python_final_example)
+![Sample Gameplay](python_final_example.png)
