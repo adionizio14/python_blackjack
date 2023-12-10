@@ -13,4 +13,4 @@ Then, make sure to download both python files and put them in the same directory
 ## How to run it
 1. Open up your terminal,command prompt, etc... 
 2. cd into the directory/folder where you have the two python files 
-3. Type in command line 'python blackjack.py <number of decks being used>'
+3. Type in command line `python blackjack.py <number of decks being used>`
