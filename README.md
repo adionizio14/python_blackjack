@@ -28,8 +28,10 @@ prompt the user with 3 more probabilites if you decide to hit. Type in `h` to hi
 Repeat this process until you win, lose or tie.
 
 The game will then ask if you want to play again, as well as output the same probabilites at the start, but updated
-now that cards have been dealt.
+now that cards have been dealt and also your record of wins,losses and ties.
 
-Note: The deck will be "shuffled" when 70% of cards have been dealt.
+Note: The deck will be "shuffled" automatically when 70% of cards have been dealt.
+
+## Sample input and gameplay
 
 
