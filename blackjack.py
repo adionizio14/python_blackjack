@@ -1,7 +1,8 @@
 # Andrew Dionizio
-# CSC 340 -
+# CSC 340 Applied Combinatorics
+# 12/15/2023
 
-
+import sys
 from random import randint
 import probability as prob
 
@@ -43,7 +44,9 @@ class Blackjack:
 
         while True:
 
+            print()
             print("Welcome to Blackjack!")
+            print("You are playing with " + str(self.num_decks) + " deck(s).")
             print()
             self.print_starting_probabilities()
             print("Would you like to play? (y/n)")
@@ -75,7 +78,6 @@ class Blackjack:
         dealing the cards, it checks if the deck has been used more than 70% and if it has, it shuffles the deck.
         """
         self.check_deck()
-        print(self.deck_count)
         self.player_cards = []
         self.dealer_cards = []
         self.player_cards.append(self.draw_card())
@@ -270,7 +272,6 @@ class Blackjack:
         self.print_starting_probabilities()
         print("Would you like to play again? (y/n)")
         print("Wins: " + str(self.win_total) + " Losses: " + str(self.lost_total) + " Ties: " + str(self.tie_total))
-        print(self.deck_count)
         print()
         play = input()
         print()
@@ -293,5 +294,6 @@ class Blackjack:
         print()
 
 
-game = Blackjack(1)
+num_decks = int(sys.argv[1])
+game = Blackjack(num_decks)
 game.start_game()
