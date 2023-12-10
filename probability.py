@@ -89,18 +89,19 @@ def blackjack(deck, player_total, deck_values, num_decks):
     """
     This function calculates the probability of getting a blackjack after the first hand has been dealt. It is
     calculated by first getting the card needed to get a blackjack, then calculating the probability of getting it
-    using the total number of cards in the deck and the number of cards of that type in the deck.
+    using the prob_of_certain_card function.
     """
     card_to_draw = 21 - player_total
 
     if card_to_draw > 11:
-        return 0
+        print("There is no card in the deck that can give you a blackjack")
+        return
     elif card_to_draw == 1:
         card_to_draw = 11
 
     prob = prob_of_certain_card(deck, card_to_draw, deck_values, num_decks)
 
-    return round(prob * 100, 2)
+    print("The probability of getting a blackjack if you hit is: " + str(round(prob * 100, 2)) + "%")
 
 
 def prob_of_certain_card(deck, card_to_draw, deck_values, num_decks):
@@ -131,11 +132,13 @@ def prob_of_certain_card(deck, card_to_draw, deck_values, num_decks):
 def good_hand(deck, player_total, deck_values, num_decks):
     """
     This function calculates the probability of getting a good hand after the first hand has been dealt. It is
-    calculated by first getting the card needed to get a good hand, then calculating the probability of getting it
-    using the total number of cards in the deck and the number of cards of that type in the deck.
+    calculated by first getting the cards needed to get a good hand in an array,
+    then calculating the probability of getting them
     """
     if player_total >= 18:
-        return 0
+        print("You already have a good hand")
+        return
+
     cards_to_draw = [18 - player_total, 19 - player_total, 20 - player_total, 21 - player_total]
     total_prob = 0
 
@@ -148,4 +151,30 @@ def good_hand(deck, player_total, deck_values, num_decks):
         prob = prob_of_certain_card(deck, card, deck_values, num_decks)
         total_prob += prob
 
-    return round(total_prob * 100, 2)
+    print("The probability of getting a good hand if you hit is: " + str(round(total_prob * 100, 2)) + "%")
+
+
+def over_21(deck, player_total, deck_values, num_decks):
+    """
+    This function calculates the probability of going over 21 after the first hand has been dealt. It is
+    calculated by first getting the cards needed to go over 21 in an array,
+    then calculating the probability of getting them using the prob_of_certain_card function.
+    """
+
+    if player_total <= 11:
+        print("You are safe from going over 21")
+        return
+
+    over = 21 - player_total
+    over_list = []
+
+    for i in range(2, 11):
+        if i > over:
+            over_list.append(i)
+
+    total_prob = 0
+    for card in over_list:
+        prob = prob_of_certain_card(deck, card, deck_values, num_decks)
+        total_prob += prob
+
+    print("The probability of going over 21 if you hit is: " + str(round(total_prob * 100, 2)) + "%")

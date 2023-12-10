@@ -21,12 +21,15 @@ class Blackjack:
         self.player_cards = None
         self.player_total = 0
         self.dealer_total = 0
+        self.tie_total = 0
+        self.win_total = 0
+        self.lost_total = 0
         self.num_decks = num_decks
         self.deck_strings = ["two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen",
                              "king", "ace"]
         self.deck_values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 
-        self.deck_count = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+        self.deck_count = []
 
     def start_game(self):
 
@@ -60,6 +63,7 @@ class Blackjack:
         """
         This function fills the deck with the correct number of cards based on the number of decks
         """
+        self.deck_count = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         for i in range(0, 13):
             self.deck_count[i] = self.num_decks * 4
 
@@ -67,23 +71,32 @@ class Blackjack:
 
         """
         This function deals the cards to the player and dealer, like a real
-        game of blackjack, player first, then dealer. It then calls the player's turn.
+        game of blackjack, player first, then dealer. It then calls the player's turn. Before
+        dealing the cards, it checks if the deck has been used more than 70% and if it has, it shuffles the deck.
         """
-        # check if the deck is empty
-        if sum(self.deck_count) == 0:
-            print("The deck is empty. Please restart the game.")
-            return
+        self.check_deck()
+        print(self.deck_count)
         self.player_cards = []
         self.dealer_cards = []
         self.player_cards.append(self.draw_card())
         self.dealer_cards.append(self.draw_card())
         self.player_cards.append(self.draw_card())
         self.dealer_cards.append(self.draw_card())
-        self.check_for_ace_and_adjust(self.player_cards, self.player_total)
-        self.check_for_ace_and_adjust(self.dealer_cards, self.dealer_total)
         self.print_player_cards()
         self.print_dealer_cards()
         self.player_turn()
+
+    def check_deck(self):
+        """
+        This function checks if the deck has been used more than 70% and if it has, it shuffles the deck
+        """
+
+        total_start_cards = 52 * self.num_decks
+        cards_dealt = total_start_cards - sum(self.deck_count)
+
+        if cards_dealt >= (total_start_cards * 0.7):
+            print("Shuffling deck...")
+            self.fill_deck()
 
     @staticmethod
     def check_for_ace_and_adjust(cards, total):
@@ -95,19 +108,24 @@ class Blackjack:
             print("Ace found")
             total -= 10
 
+        return total
+
     def draw_card(self):
 
         """
-        This function draws a card from the deck and returns its value
+        This function draws a random card from the deck that still has cards left and returns its value
         """
 
-        while True:
-            card_index = randint(0, 12)
-            if self.deck_count[card_index] > 0:
-                self.deck_count[card_index] -= 1
-                return card_index
-            else:
-                self.draw_card()
+        non_zero_totals = []
+        for i in range(0, len(self.deck_count)):
+            if self.deck_count[i] > 0:
+                non_zero_totals.append(i)
+
+        card_index = non_zero_totals[randint(0, len(non_zero_totals) - 1)]
+
+        self.deck_count[card_index] -= 1
+
+        return card_index
 
     def print_player_cards(self):
 
@@ -121,6 +139,7 @@ class Blackjack:
             print(self.deck_strings[card], end=" ")
             self.player_total += self.deck_values[card]
         print()
+        self.player_total = self.check_for_ace_and_adjust(self.player_cards, self.player_total)
         print("Your total is: " + str(self.player_total))
         print()
 
@@ -146,10 +165,12 @@ class Blackjack:
 
         while True:
 
-            blackjack = prob.blackjack(self.deck_count, self.player_total, self.deck_values, self.num_decks)
-            print("The probability of getting a blackjack if you hit is: " + str(blackjack) + "%")
-            good_hand = prob.good_hand(self.deck_count, self.player_total, self.deck_values, self.num_decks)
-            print("The probability of getting a good hand if you hit is: " + str(good_hand) + "%")
+            if self.player_total == 21:
+                self.dealer_turn()
+
+            prob.blackjack(self.deck_count, self.player_total, self.deck_values, self.num_decks)
+            prob.good_hand(self.deck_count, self.player_total, self.deck_values, self.num_decks)
+            prob.over_21(self.deck_count, self.player_total, self.deck_values, self.num_decks)
             print()
 
             print("Would you like to hit or stand? (h/s)")
@@ -157,15 +178,12 @@ class Blackjack:
             choice = input()
             print()
 
-            if self.player_total == 21:
-                self.dealer_turn()
-
             if choice == "h":
                 self.player_cards.append(self.draw_card())
-                self.check_for_ace_and_adjust(self.player_cards, self.player_total)
                 self.print_player_cards()
                 if self.player_total > 21:
                     print("You lose!")
+                    self.lost_total += 1
                     self.end_prompt()
                     break
                 elif self.player_total == 21:
@@ -191,10 +209,10 @@ class Blackjack:
         while True:
             if self.dealer_total < 17:
                 self.dealer_cards.append(self.draw_card())
-                self.check_for_ace_and_adjust(self.dealer_cards, self.dealer_total)
                 self.print_dealer_cards_on_turn()
                 if self.dealer_total > 21:
                     print("You win!")
+                    self.win_total += 1
                     self.end_prompt()
                     break
             else:
@@ -214,6 +232,7 @@ class Blackjack:
             print(self.deck_strings[card], end=" ")
             self.dealer_total += self.deck_values[card]
         print()
+        self.dealer_total = self.check_for_ace_and_adjust(self.dealer_cards, self.dealer_total)
         print("The dealer's total is: " + str(self.dealer_total))
         print()
 
@@ -228,10 +247,13 @@ class Blackjack:
 
         if self.player_total > self.dealer_total:
             print("You win!")
+            self.win_total += 1
         elif self.player_total < self.dealer_total:
             print("You lose!")
+            self.lost_total += 1
         else:
             print("You push")
+            self.tie_total += 1
 
         self.end_prompt()
 
@@ -247,6 +269,8 @@ class Blackjack:
         print()
         self.print_starting_probabilities()
         print("Would you like to play again? (y/n)")
+        print("Wins: " + str(self.win_total) + " Losses: " + str(self.lost_total) + " Ties: " + str(self.tie_total))
+        print(self.deck_count)
         print()
         play = input()
         print()
@@ -254,6 +278,7 @@ class Blackjack:
             self.deal_cards()
         elif play == "n":
             print("Thanks for playing!")
+            exit(1)
         else:
             print("Invalid input, please try again.")
 
@@ -268,5 +293,5 @@ class Blackjack:
         print()
 
 
-game = Blackjack(2)
+game = Blackjack(1)
 game.start_game()
