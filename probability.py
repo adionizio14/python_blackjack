@@ -10,10 +10,9 @@ def first_hand_blackjack(deck):
     ten_value_totals = deck[8] + deck[9] + deck[10] + deck[11]
     ace_value_totals = deck[12]
 
-    ten_ace_prob = (ace_value_totals / sum(deck)) * (ten_value_totals / (sum(deck) - 1))
-    ace_ten_prob = (ten_value_totals / sum(deck)) * (ace_value_totals / (sum(deck) - 1))
+    prob = (ten_value_totals*ace_value_totals) / comb(sum(deck), 2)
 
-    return round((ten_ace_prob + ace_ten_prob) * 100, 2)
+    return round(prob * 100, 2)
 
 
 def good_initial_hand(deck):
@@ -39,11 +38,10 @@ def first_hand_20(deck):
     nine_value_totals = deck[7]
     ten_value_totals = deck[8] + deck[9] + deck[10] + deck[11]
 
-    ace_nine_prob = (ace_value_totals / sum(deck)) * (nine_value_totals / (sum(deck) - 1))
-    nine_ace_prob = (nine_value_totals / sum(deck)) * (ace_value_totals / (sum(deck) - 1))
+    ace_nine_prob = (ace_value_totals * nine_value_totals) / comb(sum(deck), 2)
     ten_ten_prob = (comb(ten_value_totals, 2)) / comb(sum(deck), 2)
 
-    return round((ace_nine_prob + nine_ace_prob + ten_ten_prob) * 100, 2)
+    return round((ace_nine_prob + ten_ten_prob) * 100, 2)
 
 
 def first_hand_19(deck):
@@ -56,12 +54,10 @@ def first_hand_19(deck):
     nine_value_totals = deck[7]
     ten_value_totals = deck[8] + deck[9] + deck[10] + deck[11]
 
-    ace_eight_prob = (ace_value_totals / sum(deck)) * (eight_value_totals / (sum(deck) - 1))
-    eight_ace_prob = (eight_value_totals / sum(deck)) * (ace_value_totals / (sum(deck) - 1))
-    nine_ten_prob = (nine_value_totals / sum(deck)) * (ten_value_totals / (sum(deck) - 1))
-    ten_nine_prob = (ten_value_totals / sum(deck)) * (nine_value_totals / (sum(deck) - 1))
+    ace_eight_prob = (ace_value_totals * eight_value_totals) / comb(sum(deck), 2)
+    ten_nine_prob = (ten_value_totals * nine_value_totals) / comb(sum(deck), 2)
 
-    return round((ace_eight_prob + eight_ace_prob + nine_ten_prob + ten_nine_prob) * 100, 2)
+    return round((ace_eight_prob + ten_nine_prob) * 100, 2)
 
 
 def first_hand_18(deck):
@@ -76,13 +72,11 @@ def first_hand_18(deck):
     nine_value_totals = deck[7]
     ten_value_totals = deck[8] + deck[9] + deck[10] + deck[11]
 
-    ace_seven_prob = (ace_value_totals / sum(deck)) * (seven_value_totals / (sum(deck) - 1))
-    seven_ace_prob = (seven_value_totals / sum(deck)) * (ace_value_totals / (sum(deck) - 1))
+    ace_seven_prob = (ace_value_totals * seven_value_totals) / comb(sum(deck), 2)
     nine_nine_prob = (comb(nine_value_totals, 2)) / comb(sum(deck), 2)
-    ten_eight_prob = (ten_value_totals / sum(deck)) * (eight_value_totals / (sum(deck) - 1))
-    eight_ten_prob = (eight_value_totals / sum(deck)) * (ten_value_totals / (sum(deck) - 1))
+    ten_eight_prob = (ten_value_totals * eight_value_totals) / comb(sum(deck), 2)
 
-    return round((ace_seven_prob + seven_ace_prob + nine_nine_prob + ten_eight_prob + eight_ten_prob) * 100, 2)
+    return round((ace_seven_prob + nine_nine_prob + ten_eight_prob ) * 100, 2)
 
 
 def blackjack(deck, player_total, deck_values, num_decks):
