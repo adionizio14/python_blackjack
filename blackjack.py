@@ -2,6 +2,20 @@
 # CSC 340 Applied Combinatorics
 # 12/15/2023
 
+"""
+Problem Statement:
+Develop an interactive and informative Blackjack application that not only allows users to play the popular casino
+card game with customizable deck options but also provides real-time probability assessments at crucial stages of the
+game. The application should give the player accurate probabilities for specific outcomes, including the likelihood
+of obtaining a perfect hand (21) or a favorable hand (18-21) before the initial deal. After the cards are dealt,
+it would also give the chances of getting 21, going over 21 or getting a favorable hand (18-21) if the user decides
+to hit. The goal is to create a program using topics we went over in class while also combining it with a real-world
+application, like a casino game. This program was designed primarily to showcase the math included and not the actual
+blackjack gameplay. In a regular game, the user does not have access to the cards and their counts. For example,
+when the cards are dealt the dealer has a “hidden” card, but when we calculate the probability, that card is taken
+into account.
+"""
+
 import sys
 from random import randint
 import probability as prob
@@ -294,6 +308,6 @@ class Blackjack:
         print()
 
 
-num_decks = int(sys.argv[1])
-game = Blackjack(num_decks)
+decks = int(sys.argv[1])
+game = Blackjack(decks)
 game.start_game()
